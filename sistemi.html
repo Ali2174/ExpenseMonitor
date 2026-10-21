@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="az" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xərc İdarəetmə Sistemi (2026-2027)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-500 text-white p-2 rounded-xl shadow-md">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">Xərc Planı (2026-2027)</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Rollover & Yığım Məntiqi ilə</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs & Actions -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <nav class="hidden md:flex space-x-1 bg-slate-100 dark:bg-slate-700 p-1 rounded-xl text-sm font-medium">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-1.5 rounded-lg transition-all bg-white dark:bg-slate-600 shadow-sm">İcmal</button>
+                    <button onclick="switchTab('items')" id="nav-items" class="px-3 py-1.5 rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900">Xərclər & Cədvəl</button>
+                    <button onclick="switchTab('calendar')" id="nav-calendar" class="px-3 py-1.5 rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900">Təqvim</button>
+                    <button onclick="switchTab('history')" id="nav-history" class="px-3 py-1.5 rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900">Tarixçə</button>
+                </nav>
+
+                <!-- Theme Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="Gecə/Gündüz rejimi">
+                    <svg id="sun-icon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <svg id="moon-icon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+
+                <!-- Settings / Backup Modal Trigger -->
+                <button onclick="openSettingsModal()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Yedəkləmə və Ayarlar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Bar -->
+        <div class="flex md:hidden border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-2 justify-around text-xs font-medium">
+            <button onclick="switchTab('dashboard')" id="mob-nav-dashboard" class="flex flex-col items-center py-1 px-3 rounded-lg text-brand-600 dark:text-brand-400">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                İcmal
+            </button>
+            <button onclick="switchTab('items')" id="mob-nav-items" class="flex flex-col items-center py-1 px-3 rounded-lg text-slate-500 dark:text-slate-400">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                Xərclər
+            </button>
+            <button onclick="switchTab('calendar')" id="mob-nav-calendar" class="flex flex-col items-center py-1 px-3 rounded-lg text-slate-500 dark:text-slate-400">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Təqvim
+            </button>
+            <button onclick="switchTab('history')" id="mob-nav-history" class="flex flex-col items-center py-1 px-3 rounded-lg text-slate-500 dark:text-slate-400">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Tarixçə
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: DASHBOARD -->
+        <div id="tab-dashboard" class="space-y-6">
+            <!-- Welcome / Status Banner -->
+            <div class="bg-gradient-to-r from-brand-600 to-emerald-700 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="bg-white/20 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">Aktiv Dövr: 21 Oktyabr 2026 - 31 Oktyabr 2027</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold mt-2">Xərclərə Nəzarət Paneliniz</h2>
+                    <p class="text-brand-50 text-sm mt-1">İstifadə olunmayan büdcələr avtomatik olaraq növbəti perioda yığılır (rollover).</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="openAddExpenseModal()" class="bg-white text-brand-700 font-semibold px-4 py-2.5 rounded-xl shadow hover:bg-brand-50 transition text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Yeni Xərc Əlavə Et
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Ümumi Xərclənən (Cəmi)</p>
+                    <h3 id="stat-total-spent" class="text-2xl font-bold mt-2 text-slate-900 dark:text-white">£0.00</h3>
+                    <p class="text-xs text-slate-400 mt-1">Qeyd olunan alış-verişlər</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Aktiv Yığılan / Qalıq Büdcə</p>
+                    <h3 id="stat-accumulated-budget" class="text-2xl font-bold mt-2 text-brand-600 dark:text-brand-400">£0.00</h3>
+                    <p class="text-xs text-slate-400 mt-1">İstifadəni gözləyən vəsait</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Aktiv Xərc Növləri</p>
+                    <h3 id="stat-items-count" class="text-2xl font-bold mt-2 text-slate-900 dark:text-white">12</h3>
+                    <p class="text-xs text-slate-400 mt-1">İdarə olunan kateqoriya</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Bu Gün Gözlənilən</p>
+                    <h3 id="stat-due-today" class="text-2xl font-bold mt-2 text-amber-600 dark:text-amber-400">0</h3>
+                    <p class="text-xs text-slate-400 mt-1">Bugünkü ödəniş/alışlar</p>
+                </div>
+            </div>
+
+            <!-- Quick Action / Due Today Section -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold">Bu gün və ya yaxın günlərdə olan xərclər</h3>
+                    <button onclick="switchTab('items')" class="text-sm text-brand-600 dark:text-brand-400 font-medium hover:underline">Hamısına bax →</button>
+                </div>
+                <div id="dashboard-due-list" class="space-y-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ITEMS & SCHEDULE -->
+        <div id="tab-items" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold">Xərc Kateqoriyaları və İdarəetmə</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Hər bir məhsulun intervalı, cari yığılan məbləği və "Alındı" qeyd etmə paneli.</p>
+                </div>
+                <button onclick="openAddExpenseModal()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-xl shadow transition text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Yeni Xərc Əlavə Et
+                </button>
+            </div>
+
+            <!-- Items Grid -->
+            <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+
+        <!-- TAB 3: CALENDAR VIEW -->
+        <div id="tab-calendar" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold">İnteraktiv Təqvim Görünüşü</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Hansı tarixdə hansı xərcin düşdüyünü izləyin.</p>
+                </div>
+                <div class="flex items-center space-x-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1">
+                    <button onclick="changeMonth(-1)" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <span id="calendar-month-year" class="px-4 font-semibold text-sm">Oktyabr 2026</span>
+                    <button onclick="changeMonth(1)" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-4 sm:p-6">
+                <!-- Weekdays Header -->
+                <div class="grid grid-cols-7 gap-2 text-center text-xs font-semibold text-slate-400 mb-3">
+                    <div>B.E.</div><div>Ç.A.</div><div>Ç.</div><div>C.A.</div><div>C.</div><div>Ş.</div><div>B.</div>
+                </div>
+                <!-- Calendar Days Grid -->
+                <div id="calendar-days-grid" class="grid grid-cols-7 gap-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: HISTORY -->
+        <div id="tab-history" class="space-y-6 hidden">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold">Əməliyyatlar Tarixçəsi</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">İndiyə qədər qeyd etdiyiniz bütün alış-verişlər və ödənişlər.</p>
+                </div>
+                <button onclick="clearHistory()" class="text-sm text-red-600 hover:text-red-700 font-medium">Tarixçəni təmizlə</button>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+                                <th class="p-4 font-semibold">Tarix</th>
+                                <th class="p-4 font-semibold">Kateqoriya</th>
+                                <th class="p-4 font-semibold">Məbləğ</th>
+                                <th class="p-4 font-semibold">Qeyd</th>
+                                <th class="p-4 font-semibold text-right">Əməliyyat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y divide-slate-100 dark:divide-slate-700">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
+        <p>Xərc İdarəetmə Sistemi &bull; GitHub Pages üçün hazırdır (Single-file HTML)</p>
+    </footer>
+
+    <!-- MODAL: RECORD PURCHASE / DETAILS -->
+    <div id="purchase-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 id="modal-item-title" class="text-lg font-bold">Xərc Qeydiyyatı</h3>
+                <button onclick="closeModal('purchase-modal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <p id="modal-item-desc" class="text-sm text-slate-500 dark:text-slate-400"></p>
+            
+            <form id="purchase-form" onsubmit="handlePurchaseSubmit(event)" class="space-y-4">
+                <input type="hidden" id="modal-item-id">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Ödənilən Məbləğ (£)</label>
+                    <input type="number" step="0.01" id="modal-purchase-amount" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Tarix</label>
+                    <input type="date" id="modal-purchase-date" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Qeyd (İstəyə bağlı)</label>
+                    <input type="text" id="modal-purchase-note" placeholder="Məs: Marketdən alındı" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeModal('purchase-modal')" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition">Ləğv et</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow transition">Alındı olaraq qeyd et</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW EXPENSE -->
+    <div id="add-expense-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold">Yeni Xərc Kateqoriyası Əlavə Et</h3>
+                <button onclick="closeModal('add-expense-modal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form onsubmit="handleNewExpenseSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Məhsul / Xərc Adı</label>
+                    <input type="text" id="new-item-name" required placeholder="Məs: Coffee" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Məbləğ (£)</label>
+                    <input type="number" step="0.01" id="new-item-amount" required placeholder="5.00" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">İnterval (Hər X gündən bir)</label>
+                    <input type="number" min="1" id="new-item-interval" required placeholder="7" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Başlanğıc (Anchor) Tarixi</label>
+                    <input type="date" id="new-item-anchor" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeModal('add-expense-modal')" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition">Ləğv et</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow transition">Əlavə et</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SETTINGS & BACKUP -->
+    <div id="settings-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700 space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold">Ayarlar və Məlumat İdarəetməsi</h3>
+                <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-sm">
+                <div class="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-semibold mb-1">GitHub Pages-ə Yükləmək Üçün:</h4>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
+                        Bu faylı (<code>index.html</code>) birbaşa öz GitHub repository-nizə yükləyin və Settings -> Pages bölməsindən `main` branch-i seçərək pulsuz olaraq internetdə yayımlaya bilərsiniz.
+                    </p>
+                </div>
+
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
+                    <h4 class="font-semibold">Məlumatların Yedəklənməsi (Backup)</h4>
+                    <div class="flex gap-3">
+                        <button onclick="exportData()" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 font-medium py-2.5 px-4 rounded-xl transition text-center">JSON Export</button>
+                        <label class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 font-medium py-2.5 px-4 rounded-xl transition text-center cursor-pointer">
+                            JSON Import
+                            <input type="file" accept=".json" onchange="importData(event)" class="hidden">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <button onclick="resetToDefaultData()" class="w-full bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-100 font-medium py-2.5 rounded-xl transition text-center">Bütün Məlumatları Sıfırla (Default-a Qayıt)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-xl shadow-xl text-sm font-medium flex items-center gap-2">
+        <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span id="toast-message">Əməliyyat uğurla yerinə yetirildi</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Initial Default Items based on user prompt
+        const defaultItems = [
+            { id: 'water', name: 'Water', amount: 3, interval: 5, anchor: '2026-10-27', custom: false },
+            { id: 'banana', name: 'Banana', amount: 1.5, interval: 7, anchor: '2026-10-24', custom: false },
+            { id: 'apples_clems', name: 'Apples and clems', amount: 2, interval: 6, anchor: '2026-10-27', custom: false },
+            { id: 'chicken_breast', name: 'Chicken Breast', amount: 4, interval: 7, anchor: '2026-10-23', custom: false },
+            { id: 'apollo', name: 'Apollo', amount: 2, interval: 14, anchor: '2026-10-26', custom: false },
+            { id: 'soup', name: 'Soup', amount: 2, interval: 7, anchor: '2026-10-26', custom: false },
+            { id: 'cookies', name: 'Cookies', amount: 2, interval: 7, anchor: '2026-10-26', custom: false },
+            { id: 'hazelnuts', name: 'Hazelnuts', amount: 4, interval: 7, anchor: '2026-10-26', custom: false },
+            { id: 'something', name: 'Something', amount: 8, interval: 7, anchor: '2026-10-21', custom: false },
+            { id: 'tuna', name: 'Tuna', amount: 2, interval: 7, anchor: '2026-10-23', custom: false },
+            { id: 'salad', name: 'Salad', amount: 3, interval: 7, anchor: '2026-10-23', custom: false },
+            { id: 'new_item', name: 'Yeni Əlavə Xərc', amount: 7, interval: 7, anchor: '2026-10-21', custom: false }
+        ];
+
+        // State variables
+        let items = JSON.parse(localStorage.getItem('exp_items')) || defaultItems;
+        let purchases = JSON.parse(localStorage.getItem('exp_purchases')) || []; // { id, itemId, date, amount, note }
+        let currentTab = 'dashboard';
+        let calendarYear = 2026;
+        let calendarMonth = 9; // October (0-indexed)
+
+        // Utility Date functions
+        function parseDate(str) {
+            return new Date(str + 'T00:00:00');
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDisplayDate(dateStr) {
+            const d = parseDate(dateStr);
+            return d.toLocaleDateString('az-AZ', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function getTodayString() {
+            // For testing/simulation, we can use real today or fixed current date context (Oct 21, 2026)
+            return '2026-10-21';
+        }
+
+        // Rollover & Accumulation Calculation Engine
+        // For each item, calculates active accumulated budget and current active period based on purchase history and anchor date up to today.
+        function calculateItemStatus(item, targetDateStr = getTodayString()) {
+            const anchor = parseDate(item.anchor);
+            const target = parseDate(targetDateStr);
+            
+            if (target < anchor) {
+                return { accumulated: 0, nextDueDate: item.anchor, periodsCount: 0, periods: [], status: 'Hələ başlamayıb' };
+            }
+
+            // Generate all periods from anchor up to target date
+            let periods = [];
+            let currentStart = new Date(anchor);
+            
+            while (currentStart <= target) {
+                let currentEnd = new Date(currentStart);
+                currentEnd.setDate(currentEnd.getDate() + item.interval - 1);
+                
+                periods.push({
+                    start: formatDate(currentStart),
+                    end: formatDate(currentEnd),
+                    amount: item.amount
+                });
+
+                currentStart.setDate(currentStart.getDate() + item.interval);
+            }
+
+            // Sort purchases for this item chronologically safely
+            const itemPurchases = purchases
+                .filter(p => p.itemId === item.id)
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Calculate running accumulation with rollover
+            let accumulated = 0;
+
+            periods.forEach((period) => {
+                accumulated += period.amount;
+                
+                // Check if any purchase occurred during or up to this period that covers it
+                const matchingPurchase = itemPurchases.find(p => p.date >= period.start && p.date <= period.end);
+                if (matchingPurchase) {
+                    accumulated = Math.max(0, accumulated - matchingPurchase.amount);
+                    if (matchingPurchase.amount >= accumulated) {
+                        accumulated = 0;
+                    }
+                }
+            });
+
+            const lastPeriod = periods[periods.length - 1];
+            
+            return {
+                accumulated: Math.max(0, accumulated),
+                nextDueDate: lastPeriod ? lastPeriod.start : item.anchor,
+                periodsCount: periods.length,
+                periods: periods
+            };
+        }
+
+        // Init App on load
+        window.onload = function() {
+            // Check dark mode
+            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+            
+            // Set default date in modal to today
+            document.getElementById('modal-purchase-date').value = getTodayString();
+            document.getElementById('new-item-anchor').value = getTodayString();
+
+            renderAll();
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function switchTab(tabId) {
+            currentTab = tabId;
+            ['dashboard', 'items', 'calendar', 'history'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) {
+                    if (t === tabId) {
+                        navBtn.className = "px-3 py-1.5 rounded-lg transition-all bg-white dark:bg-slate-600 shadow-sm font-medium";
+                    } else {
+                        navBtn.className = "px-3 py-1.5 rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900 font-medium";
+                    }
+                }
+                const mobBtn = document.getElementById(`mob-nav-${t}`);
+                if (mobBtn) {
+                    if (t === tabId) {
+                        mobBtn.className = "flex flex-col items-center py-1 px-3 rounded-lg text-brand-600 dark:text-brand-400";
+                    } else {
+                        mobBtn.className = "flex flex-col items-center py-1 px-3 rounded-lg text-slate-500 dark:text-slate-400";
+                    }
+                }
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            renderAll();
+        }
+
+        function renderAll() {
+            renderDashboard();
+            renderItemsList();
+            renderCalendar();
+            renderHistory();
+        }
+
+        // Render Dashboard
+        function renderDashboard() {
+            let totalSpent = purchases.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+            let totalAccumulated = 0;
+            let dueTodayCount = 0;
+            const todayStr = getTodayString();
+
+            items.forEach(item => {
+                const status = calculateItemStatus(item, todayStr);
+                totalAccumulated += status.accumulated;
+
+                // Check if today falls in any active period start safely
+                const isDueToday = (status.periods || []).some(p => p.start === todayStr);
+                if (isDueToday) dueTodayCount++;
+            });
+
+            document.getElementById('stat-total-spent').innerText = `£${totalSpent.toFixed(2)}`;
+            document.getElementById('stat-accumulated-budget').innerText = `£${totalAccumulated.toFixed(2)}`;
+            document.getElementById('stat-items-count').innerText = items.length;
+            document.getElementById('stat-due-today').innerText = dueTodayCount;
+
+            // Populate dashboard due list (show items with highest accumulated or active today)
+            let dashboardItemsHtml = '';
+            items.slice(0, 5).forEach(item => {
+                const status = calculateItemStatus(item, todayStr);
+                dashboardItemsHtml += `
+                    <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-100 dark:border-slate-700">
+                        <div>
+                            <h4 class="font-semibold text-sm">${item.name}</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">İnterval: Hər ${item.interval} gündən bir (&pound;${item.amount})</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400 block">Yığılan Borc/Büdcə</span>
+                                <span class="font-bold text-brand-600 dark:text-brand-400">&pound;${status.accumulated.toFixed(2)}</span>
+                            </div>
+                            <button onclick="openPurchaseModal('${item.id}', ${status.accumulated})" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-medium px-3 py-2 rounded-lg transition shadow-sm">
+                                Alındı Qeyd Et
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('dashboard-due-list').innerHTML = dashboardItemsHtml || '<p class="text-sm text-slate-400">Aktiv xərc tapılmadı.</p>';
+        }
+
+        // Render Items List & Schedule View
+        function renderItemsList() {
+            const todayStr = getTodayString();
+            let html = '';
+
+            items.forEach(item => {
+                const status = calculateItemStatus(item, todayStr);
+                
+                html += `
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="font-bold text-base">${item.name}</h3>
+                                    <span class="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-md">Hər ${item.interval} gündən bir (&pound;${item.amount})</span>
+                                </div>
+                                ${item.custom ? `<button onclick="deleteItem('${item.id}')" class="text-slate-400 hover:text-red-500 transition" title="Sil"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>` : ''}
+                            </div>
+                            
+                            <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-3 my-3 space-y-1 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500 dark:text-slate-400">Cari Yığılan Məbləğ:</span>
+                                    <span class="font-bold text-brand-600 dark:text-brand-400 text-sm">&pound;${status.accumulated.toFixed(2)}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500 dark:text-slate-400">Növbəti Başlanğıc:</span>
+                                    <span class="font-medium">${formatDisplayDate(status.nextDueDate)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex gap-2">
+                            <button onclick="openPurchaseModal('${item.id}', ${status.accumulated})" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-medium py-2 px-3 rounded-xl transition text-xs shadow-sm flex items-center justify-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Alındı Qeyd Et
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('items-grid').innerHTML = html;
+        }
+
+        // Calendar View Logic
+        function changeMonth(direction) {
+            calendarMonth += direction;
+            if (calendarMonth > 11) {
+                calendarMonth = 0;
+                calendarYear++;
+            } else if (calendarMonth < 0) {
+                calendarMonth = 11;
+                calendarYear--;
+            }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const monthNames = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun", "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
+            document.getElementById('calendar-month-year').innerText = `${monthNames[calendarMonth]} ${calendarYear}`;
+
+            const firstDayIndex = new Date(calendarYear, calendarMonth, 1).getDay();
+            // Adjust so Monday is 0
+            const adjustedFirstDay = (firstDayIndex === 0) ? 6 : firstDayIndex - 1;
+            const totalDays = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+            // Map dates to due items
+            let dateToItemsMap = {};
+            const todayStr = getTodayString();
+
+            items.forEach(item => {
+                const status = calculateItemStatus(item, '2027-10-31');
+                status.periods.forEach(p => {
+                    if (!dateToItemsMap[p.start]) dateToItemsMap[p.start] = [];
+                    dateToItemsMap[p.start].push({ item, period: p });
+                });
+            });
+
+            let daysHtml = '';
+
+            // Blank slots for previous month padding
+            for (let i = 0; i < adjustedFirstDay; i++) {
+                daysHtml += `<div class="h-24 sm:h-28 bg-slate-50/50 dark:bg-slate-800/30 rounded-xl border border-transparent"></div>`;
+            }
+
+            // Days of current month
+            for (let day = 1; day <= totalDays; day++) {
+                const monthStr = String(calendarMonth + 1).padStart(2, '0');
+                const dayStr = String(day).padStart(2, '0');
+                const dateStr = `${calendarYear}-${monthStr}-${dayStr}`;
+                const isToday = dateStr === todayStr;
+
+                const dueList = dateToItemsMap[dateStr] || [];
+
+                daysHtml += `
+                    <div class="h-24 sm:h-28 bg-white dark:bg-slate-800 rounded-xl border ${isToday ? 'border-brand-500 ring-2 ring-brand-500/20' : 'border-slate-100 dark:border-slate-700'} p-2 flex flex-col justify-between overflow-hidden">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold ${isToday ? 'bg-brand-500 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-slate-700 dark:text-slate-300'}">${day}</span>
+                            ${dueList.length > 0 ? `<span class="text-[10px] bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded font-semibold">${dueList.length} xərc</span>` : ''}
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-1 mt-1 text-[10px]">
+                            ${dueList.map(d => `
+                                <div onclick="openPurchaseModal('${d.item.id}', ${d.item.amount}, '${dateStr}')" class="bg-brand-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-1.5 py-0.5 rounded truncate cursor-pointer hover:bg-brand-100 transition" title="${d.item.name}: £${d.item.amount}">
+                                    <strong>${d.item.name}</strong> (&pound;${d.item.amount})
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('calendar-days-grid').innerHTML = daysHtml;
+        }
+
+        // Render History Table
+        function renderHistory() {
+            let html = '';
+            const sortedPurchases = [...purchases].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedPurchases.forEach((p, index) => {
+                const item = items.find(i => i.id === p.itemId);
+                const itemName = item ? item.name : 'Digər / Silinmiş';
+
+                html += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                        <td class="p-4 font-medium">${formatDisplayDate(p.date)}</td>
+                        <td class="p-4">${itemName}</td>
+                        <td class="p-4 font-bold text-brand-600 dark:text-brand-400">&pound;${parseFloat(p.amount).toFixed(2)}</td>
+                        <td class="p-4 text-slate-500 dark:text-slate-400">${p.note || '-'}</td>
+                        <td class="p-4 text-right">
+                            <button onclick="deletePurchase(${index})" class="text-slate-400 hover:text-red-500 transition text-xs font-medium">Sil</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('history-table-body').innerHTML = html || `<tr><td colspan="5" class="p-6 text-center text-slate-400">Hələ heç bir əməliyyat qeyd olunmayıb.</td></tr>`;
+        }
+
+        // Modal Controls
+        function openPurchaseModal(itemId, suggestedAmount, dateStr = getTodayString()) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            document.getElementById('modal-item-id').value = itemId;
+            document.getElementById('modal-item-title').innerText = `${item.name} - Alış Qeydi`;
+            document.getElementById('modal-item-desc').innerText = `İnterval: Hər ${item.interval} gündən bir. Standart məbləğ: £${item.amount}. Cari yığılan balans: £${suggestedAmount.toFixed(2)}`;
+            document.getElementById('modal-purchase-amount').value = suggestedAmount > 0 ? suggestedAmount.toFixed(2) : item.amount.toFixed(2);
+            document.getElementById('modal-purchase-date').value = dateStr;
+            document.getElementById('modal-purchase-note').value = '';
+
+            document.getElementById('purchase-modal').classList.remove('hidden');
+        }
+
+        function openAddExpenseModal() {
+            document.getElementById('add-expense-modal').classList.remove('hidden');
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Form Handlers
+        function handlePurchaseSubmit(e) {
+            e.preventDefault();
+            const itemId = document.getElementById('modal-item-id').value;
+            const amount = parseFloat(document.getElementById('modal-purchase-amount').value);
+            const date = document.getElementById('modal-purchase-date').value;
+            const note = document.getElementById('modal-purchase-note').value;
+
+            purchases.push({ itemId, amount, date, note });
+            localStorage.setItem('exp_purchases', JSON.stringify(purchases));
+
+            closeModal('purchase-modal');
+            renderAll();
+            showToast('Alış uğurla qeyd olundu!');
+        }
+
+        function handleNewExpenseSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-item-name').value;
+            const amount = parseFloat(document.getElementById('new-item-amount').value);
+            const interval = parseInt(document.getElementById('new-item-interval').value);
+            const anchor = document.getElementById('new-item-anchor').value;
+            const id = 'custom_' + Date.now();
+
+            items.push({ id, name, amount, interval, anchor, custom: true });
+            localStorage.setItem('exp_items', JSON.stringify(items));
+
+            closeModal('add-expense-modal');
+            renderAll();
+            showToast('Yeni xərc kateqoriyası əlavə olundu!');
+            e.target.reset();
+        }
+
+        function deleteItem(itemId) {
+            items = items.filter(i => i.id !== itemId);
+            localStorage.setItem('exp_items', JSON.stringify(items));
+            renderAll();
+            showToast('Xərc kateqoriyası silindi.');
+        }
+
+        function deletePurchase(index) {
+            purchases.splice(index, 1);
+            localStorage.setItem('exp_purchases', JSON.stringify(purchases));
+            renderAll();
+            showToast('Əməliyyat silindi.');
+        }
+
+        function clearHistory() {
+            purchases = [];
+            localStorage.removeItem('exp_purchases');
+            renderAll();
+            showToast('Tarixçə təmizləndi.');
+        }
+
+        function resetToDefaultData() {
+            items = defaultItems;
+            purchases = [];
+            localStorage.setItem('exp_items', JSON.stringify(items));
+            localStorage.removeItem('exp_purchases');
+            closeModal('settings-modal');
+            renderAll();
+            showToast('Məlumatlar ilkin vəziyyətə qaytarıldı.');
+        }
+
+        // Backup / Export / Import JSON
+        function exportData() {
+            const data = { items, purchases };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `expense_backup_${getTodayString()}.json`;
+            a.click();
+            showToast('Yedək faylı yükləndi.');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.items && data.purchases) {
+                        items = data.items;
+                        purchases = data.purchases;
+                        localStorage.setItem('exp_items', JSON.stringify(items));
+                        localStorage.setItem('exp_purchases', JSON.stringify(purchases));
+                        renderAll();
+                        closeModal('settings-modal');
+                        showToast('Məlumatlar uğurla bərpa olundu!');
+                    } else {
+                        showToast('Yanlış JSON formatı!');
+                    }
+                } catch(err) {
+                    showToast('Fayl oxunmadı.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Toast Notification helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
